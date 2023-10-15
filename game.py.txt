@@ -1,0 +1,84 @@
+# Adventure Game
+
+# Define the rooms
+rooms = {
+    'Hall': {'East': 'Kitchen', 'North': 'Bedroom'},
+    'Kitchen': {'West': 'Hall', 'North': 'Garden', 'item': 'knife'},
+    'Bedroom': {'South': 'Hall', 'item': 'key'},
+    'Garden': {'South': 'Kitchen', 'item': 'apple'},
+}
+
+# Define the inventory
+inventory = []
+
+# Define the starting room
+current_room = 'Hall'
+
+# Define the game loop
+while True:
+    # Display current room and available directions
+    print(f'You are in the {current_room}.')
+    if 'item' in rooms[current_room]:
+        print(f'The items in this room are: {rooms[current_room]["item"]}')
+    print('Available directions:')
+    for direction in rooms[current_room]:
+        if direction != 'item':
+            print(f'- {direction}')
+
+    # Display inventory
+    if inventory:
+        print('Your inventory:')
+        for item in inventory:
+            print(f'- {item}')
+    else:
+        print('Your inventory is empty.')
+
+    # Get user input
+    command = input('>').lower()
+
+    # Check for help command
+    if command == 'help':
+        print('Type the direction you want to go (e.g. "north", "south", "east", "west").')
+        print('Type "take" followed by the item name to pick up an item (e.g. "take key").')
+        print('Type "inventory" to check what items you have in your inventory.')
+        print('Type "quit" to exit the game.')
+        continue
+
+    # Check for quit command
+    if command == 'quit':
+        break
+
+    # Check for take command
+    if command.startswith('take'):
+        # Get item name
+        item_name = command.split(' ', 1)[1]
+
+        # Check if item is in current room
+        if 'item' in rooms[current_room] and rooms[current_room]['item'] == item_name:
+            # Add item to inventory
+            inventory.append(item_name)
+            # Remove item from room
+            del rooms[current_room]['item']
+            # Display message
+            print(f'You took the {item_name}.')
+        else:
+            print(f'There is no {item_name} in this room.')
+        continue
+
+    # Check for inventory command
+    if command == 'inventory':
+        if inventory:
+            print('Your inventory:')
+            for item in inventory:
+                print(f'- {item}')
+        else:
+            print('Your inventory is empty.')
+        continue
+
+    # Check if direction is valid
+    if command not in rooms[current_room]:
+        print('Invalid direction.')
+        continue
+
+    # Update current room
+    current_room = rooms[current_room][command]
